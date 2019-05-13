@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+# fail fast
+set -e
+
+# debug
+# set -x
+
+# parse and derive params
+BUILD_DIR=$1
+CACHE_DIR=$2
+ENV_DIR=$3
+
+LP_DIR=`cd $(dirname $0); cd ..; pwd`
+
+function error() {
+  echo " !     $*" >&2
+  exit 1
+}
+
+function topic() {
+  echo "-----> $*"
+}
+
+function indent() {
+  c='s/^/       /'
+  case $(uname) in
+    Darwin) sed -l "$c";;
+    *)      sed -u "$c";;
+  esac
+}
+
+# config
+VERSION=6.5.4
+
+# Buildpack URL
+ARCHIVE_NAME=logstash
+ARCHIVE_NAME_WITH_VERSION=${ARCHIVE_NAME}-${VERSION}
+ARCHIVE_FILE_NAME=${ARCHIVE_NAME_WITH_VERSION}.tar.gz
+PACKAGE_URL=https://artifacts.elastic.co/downloads/logstash/${ARCHIVE_FILE_NAME}
+
+# Install Logstash
+if ! [ -e $CACHE_DIR/$ARCHIVE_FILE_NAME ]; then
+  topic "Fetching Logstash package from ${PACKAGE_URL}"
+  curl $PACKAGE_URL -L -o $CACHE_DIR/$ARCHIVE_FILE_NAME
+fi
+
+topic "Extracting Logstash to ${BUILD_DIR}/${ARCHIVE_NAME}"
+mkdir -p $CACHE_DIR/$ARCHIVE_NAME
+mkdir -p $BUILD_DIR/$ARCHIVE_NAME
+tar -xzf $CACHE_DIR/$ARCHIVE_FILE_NAME -C $CACHE_DIR
+mv -T $CACHE_DIR/$ARCHIVE_NAME_WITH_VERSION $BUILD_DIR/$ARCHIVE_NAME/
