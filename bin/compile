@@ -37,7 +37,7 @@ VERSION=7.1.0
 # Buildpack URL
 ARCHIVE_NAME=logstash
 ARCHIVE_NAME_WITH_VERSION=${ARCHIVE_NAME}-${VERSION}
-ARCHIVE_FILE_NAME=${ARCHIVE_NAME_WITH_VERSION}.tar.gz
+ARCHIVE_FILE_NAME=${ARCHIVE_NAME_WITH_VERSION}-linux-x86_64.tar.gz
 PACKAGE_URL=https://artifacts.elastic.co/downloads/logstash/${ARCHIVE_FILE_NAME}
 
 # Install Logstash
